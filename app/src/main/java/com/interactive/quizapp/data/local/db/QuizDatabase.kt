@@ -7,7 +7,7 @@ import com.interactive.quizapp.data.local.dao.QuestionDao
 import com.interactive.quizapp.data.local.entities.QuestionEntity
 import com.interactive.quizapp.utils.Converters
 
-@Database(entities = [QuestionEntity::class], version = 4)
+@Database(entities = [QuestionEntity::class], version = 6)
 @TypeConverters(Converters::class)
 abstract class QuizDatabase: RoomDatabase() {
     abstract fun questionDao(): QuestionDao

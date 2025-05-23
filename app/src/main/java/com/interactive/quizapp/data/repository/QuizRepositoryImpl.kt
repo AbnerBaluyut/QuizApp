@@ -28,4 +28,5 @@ class QuizRepositoryImpl @Inject constructor(
         }
     }
     override suspend fun updateQuestions(questions: List<QuestionEntity>) = dao.updateQuestions(questions)
+    override suspend fun updateQuestion(id: Int, answerIndex: Int) = dao.updateQuestion(id = id, answerIndex = answerIndex)
 }

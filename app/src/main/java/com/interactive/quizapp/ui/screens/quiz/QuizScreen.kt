@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.interactive.quizapp.ui.screens.quiz.components.QuizAppBar
 import com.interactive.quizapp.ui.screens.quiz.components.ResultContent
@@ -65,12 +66,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun QuizScreen(
     navController: NavController,
-    category: String?
+    category: String?,
+    viewModel: QuizViewModel = hiltViewModel()
 ) {
 
-    val viewModel: QuizViewModel = hiltViewModel()
     val currentPage by viewModel.currentPage.collectAsState()
-    val questions = viewModel.questions
+    val questions by viewModel.questions.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsState()
 
     val pagerState: PagerState = rememberPagerState { questions.size + 1 }
@@ -81,10 +82,8 @@ fun QuizScreen(
         viewModel.getQuestionsByCategory(category = category)
     }
 
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            viewModel.updateCurrentPage(page)
-        }
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.updateCurrentPage(pagerState.currentPage)
     }
 
     fun backFunction() {
@@ -97,7 +96,6 @@ fun QuizScreen(
                 navController.popBackStack()
             }
         } else {
-            viewModel.updateAnswers()
             navController.popBackStack()
         }
     }
@@ -114,7 +112,7 @@ fun QuizScreen(
     Scaffold(
         topBar = {
             QuizAppBar(
-                appBarTitle = if (currentPage < questions.size) "Question ${currentPage + 1}/10" else "Results",
+                appBarTitle = if (isLoading) "" else if (currentPage < questions.size) "Question ${currentPage + 1}/10" else "Results",
                 onBackPressed = { backFunction() }
             )
         },
@@ -222,21 +220,19 @@ fun QuizScreen(
                                 }
                             )
                         } else {
-                            val correctAnswers = questions.filter { it.correctAnswerIndex == it.userAnswerIndex }.size
+                            val correctAnswers = questions.count { it.correctAnswerIndex == it.userAnswerIndex }
                             val wrongAnswers = (questions.size - correctAnswers)
                             ResultContent(
                                 correctAnswers = correctAnswers,
                                 wrongAnswers = wrongAnswers,
                                 questionsSize = questions.size,
                                 onTapPlayAgain = {
-                                    viewModel.updateAnswers()
-                                    viewModel.playAgain(category = category)
+                                    viewModel.playAgain()
                                     scope.launch {
                                         pagerState.scrollToPage(0)
                                     }
                                 },
                                 onTapHome = {
-                                    viewModel.updateAnswers()
                                     navController.popBackStack()
                                 },
                             )
@@ -271,6 +267,7 @@ fun QuizScreen(
                                 isShowDialog.value = true
                             }
                         } else {
+                            viewModel.updateAnswers()
                             scope.launch {
                                 pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
                             }

@@ -5,6 +5,7 @@ import com.interactive.quizapp.domain.usecase.GetCategoriesUseCase
 import com.interactive.quizapp.domain.usecase.GetQuestionsByCategoryUseCase
 import com.interactive.quizapp.domain.usecase.GetQuestionsUseCase
 import com.interactive.quizapp.domain.usecase.SaveQuestionsUseCase
+import com.interactive.quizapp.domain.usecase.UpdateQuestionUseCase
 import com.interactive.quizapp.domain.usecase.UpdateQuestionsUseCase
 import dagger.Module
 import dagger.Provides
@@ -39,4 +40,9 @@ object UseCaseModule {
     fun provideUpdateQuestionsUseCase(
         repo: QuizRepository
     ): UpdateQuestionsUseCase = UpdateQuestionsUseCase(repo)
+
+    @Provides
+    fun provideUpdateQuestionUseCase(
+        repo: QuizRepository
+    ): UpdateQuestionUseCase = UpdateQuestionUseCase(repo)
 }

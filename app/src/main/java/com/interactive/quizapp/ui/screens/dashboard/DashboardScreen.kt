@@ -124,6 +124,35 @@ fun DashboardScreen(
                                     )
                                 }
                             )
+                            Spacer(modifier = Modifier.paddingVerticalSmall())
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .border(
+                                        width = 2.dp,
+                                        color = Purple,
+                                        shape = ButtonDefaults.shape
+                                    )
+                                    .height(70.dp)
+                                    .width(200.dp)
+                                ,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Purple.copy(
+                                        alpha = 0.5f
+                                    )
+                                ),
+                                onClick = {
+                                    navController.navigate(NavigationItem.HISTORY.route)
+                                },
+                                content = {
+                                    Text(
+                                        text = "History".uppercase(),
+                                        style = TextStyle(
+                                            fontSize = 24.sp,
+                                            color = Color.White
+                                        )
+                                    )
+                                }
+                            )
                         }
                     )
                 }

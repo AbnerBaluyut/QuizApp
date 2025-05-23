@@ -5,11 +5,12 @@ import com.interactive.quizapp.domain.model.QuestionModel
 import com.interactive.quizapp.domain.repository.QuizRepository
 import javax.inject.Inject
 
-class UpdateQuestionUseCase @Inject constructor(
+
+class UpdateQuestionsUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
 
-    suspend operator fun invoke(id: Int, answerIndex: Int) {
-        return repository.updateQuestion(id, answerIndex)
+    suspend operator fun invoke(questions: List<QuestionModel>) {
+        return repository.updateQuestions(questions.map { it.toEntity() })
     }
 }

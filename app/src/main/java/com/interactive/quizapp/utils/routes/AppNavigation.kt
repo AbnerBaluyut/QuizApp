@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.interactive.quizapp.ui.screens.categories.CategoriesScreen
 import com.interactive.quizapp.ui.screens.dashboard.DashboardScreen
+import com.interactive.quizapp.ui.screens.history.HistoryScreen
 import com.interactive.quizapp.ui.screens.quiz.QuizScreen
 
 @Composable
@@ -36,6 +37,9 @@ fun AppNavigation(
         ) { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category")
             QuizScreen(navController, category)
+        }
+        composable(NavigationItem.HISTORY.route) {
+            HistoryScreen(navController)
         }
     }
 }

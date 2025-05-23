@@ -78,8 +78,7 @@ dependencies {
 
     implementation(libs.timber)
 
-    implementation(libs.androidx.room.ktx
-    )
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 

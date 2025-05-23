@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface QuestionDao {
 
     // Get All Questions
-    @Query("SELECT * FROM questions")
+    @Query("SELECT * FROM questions ORDER BY category")
     fun getQuestions(): Flow<List<QuestionEntity>>
 
     // Insert All Questions
@@ -20,16 +20,20 @@ interface QuestionDao {
     suspend fun insertQuestions(questions: List<QuestionEntity>)
 
     // Delete All Questions
-    @Query("DELETE FROM questions")
-    suspend fun deleteAllQuestions()
+//    @Query("DELETE FROM questions")
+//    suspend fun deleteAllQuestions()
 
     // Get All Categories
     @Query("SELECT DISTINCT category FROM questions ORDER BY category ASC")
     fun getCategories(): Flow<List<String>>
 
     // Update All Questions
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateQuestions(questions: List<QuestionEntity>)
+
+    // Update Question
+    @Query("UPDATE questions SET userAnswerIndex = :answerIndex WHERE id = :id")
+    suspend fun updateQuestion(id: Int, answerIndex: Int)
 
     // Get Questions By Category
     @Query("SELECT * FROM questions WHERE category = :category")
