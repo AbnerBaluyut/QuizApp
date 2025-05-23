@@ -12,7 +12,7 @@ class GetQuestionsByCategoryUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
 
-    suspend operator fun invoke(category: String): Flow<List<QuestionModel>> {
+    suspend operator fun invoke(category: String? = null): Flow<List<QuestionModel>> {
         return repository.getQuestionsByCategory(category = category).map { entities -> entities.map { it.toModel() } }
     }
 }

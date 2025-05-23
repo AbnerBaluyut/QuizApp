@@ -36,48 +36,26 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.interactive.quizapp.ui.screens.dashboard.components.DashboardAppBar
 import com.interactive.quizapp.ui.theme.Purple
 import com.interactive.quizapp.ui.theme.PurpleGradient
 import com.interactive.quizapp.utils.extensions.paddingVerticalSmall
 import com.interactive.quizapp.utils.routes.NavigationItem
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     navController: NavHostController,
-    viewModel: DashboardViewModel = hiltViewModel()
 ) {
+
+    val viewModel: DashboardViewModel = hiltViewModel()
+
     LaunchedEffect(Unit) {
         viewModel.startUp()
     }
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "BrainBuzz",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontWeight = FontWeight.W500,
-                            fontSize = 30.sp,
-                            shadow = Shadow(
-                                color = Color.Black.copy(alpha = 0.5f),
-                                offset = Offset(x = 2f, y = 2f),
-                                blurRadius = 2f
-                            )
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = PurpleGradient
-                    )
-            )
+            DashboardAppBar()
         },
         modifier = Modifier.fillMaxSize(),
         content = { innerPadding ->

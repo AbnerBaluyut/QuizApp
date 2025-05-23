@@ -7,6 +7,6 @@ interface QuizRepository {
     suspend fun getQuestions(): Flow<List<QuestionEntity>>
     suspend fun saveQuestions(questions: List<QuestionEntity>)
     suspend fun getCategories(): Flow<List<String>>
-    suspend fun getQuestionsByCategory(category: String): Flow<List<QuestionEntity>>
+    suspend fun getQuestionsByCategory(category: String?): Flow<List<QuestionEntity>>
     suspend fun updateQuestions(question: List<QuestionEntity>)
 }

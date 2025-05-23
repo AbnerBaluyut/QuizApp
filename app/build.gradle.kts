@@ -42,6 +42,9 @@ android {
         compose = true
         buildConfig = true
     }
+    hilt {
+        enableAggregatingTask = false
+    }
 }
 
 dependencies {

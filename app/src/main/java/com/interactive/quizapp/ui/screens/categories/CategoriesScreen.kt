@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
@@ -20,6 +22,9 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,14 +43,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.interactive.quizapp.ui.screens.categories.components.CategoriesAppBar
 import com.interactive.quizapp.ui.theme.Purple
 import com.interactive.quizapp.ui.theme.PurpleGradient
 import com.interactive.quizapp.utils.extensions.Spacing
 import com.interactive.quizapp.utils.extensions.paddingVerticalSmall
+import com.interactive.quizapp.utils.routes.NavigationItem
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(
+    navController: NavController
+) {
 
     val viewModel: CategoriesViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
@@ -56,30 +65,8 @@ fun CategoriesScreen() {
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Categories",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontWeight = FontWeight.W500,
-                            fontSize = 30.sp,
-                            shadow = Shadow(
-                                color = Color.Black.copy(alpha = 0.5f),
-                                offset = Offset(x = 2f, y = 2f),
-                                blurRadius = 2f
-                            )
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = PurpleGradient
-                    )
+            CategoriesAppBar(
+                onBackPressed = { navController.popBackStack() }
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -110,6 +97,7 @@ fun CategoriesScreen() {
                             .padding(innerPadding),
                         content = {
                             items(categories.size) { index ->
+                                val category = categories[index]
                                 ElevatedButton(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -117,16 +105,16 @@ fun CategoriesScreen() {
                                             horizontal = Spacing.large
                                         )
                                         .height(80.dp),
-                                    shape = RoundedCornerShape(16),
+                                    shape = RoundedCornerShape(80),
                                     elevation = ButtonDefaults.buttonElevation(
                                         defaultElevation = 5.dp
                                     ),
                                     onClick = {
-
+                                        navController.navigate("${NavigationItem.QUIZ.route}?category=${category}")
                                     },
                                     content =  {
                                         Text(
-                                            text = categories[index],
+                                            text = category,
                                             style = TextStyle(
                                                 fontSize = 24.sp,
                                                 fontWeight = FontWeight.W500,

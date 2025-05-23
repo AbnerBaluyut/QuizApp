@@ -1,7 +1,6 @@
 package com.interactive.quizapp.ui.screens.quiz
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.interactive.quizapp.domain.model.QuestionModel
@@ -26,20 +25,27 @@ class QuizViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> get() = _currentPage
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
+
     fun updateCurrentPage(index: Int) {
         _currentPage.value = index
     }
 
-    fun getQuestionsByCategory() {
+    fun getQuestionsByCategory(category: String?) {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
-                getQuestionsByCategoryUseCase.invoke("General Knowledge").collect { items ->
+                getQuestionsByCategoryUseCase.invoke(category = category).collect { items ->
+                    items.forEach { it.userAnswerIndex = null }
                     _questions.apply {
                         clear()
                         addAll(items)
                     }
+                    _isLoading.value = false
                 }
             } catch (e: Exception) {
+                _isLoading.value = true
                 Timber.e(e.message, "Failed to get questions by category")
             }
         }
@@ -57,5 +63,10 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             updateQuestionsUseCase.invoke(_questions)
         }
+    }
+
+    fun playAgain(category: String?) {
+        getQuestionsByCategory(category = category)
+        _currentPage.value = 0
     }
 }
