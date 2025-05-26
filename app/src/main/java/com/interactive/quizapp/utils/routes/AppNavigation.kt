@@ -13,6 +13,7 @@ import com.interactive.quizapp.ui.screens.categories.CategoriesScreen
 import com.interactive.quizapp.ui.screens.dashboard.DashboardScreen
 import com.interactive.quizapp.ui.screens.history.HistoryScreen
 import com.interactive.quizapp.ui.screens.quiz.QuizScreen
+import com.interactive.quizapp.utils.Args
 
 @Composable
 fun AppNavigation(
@@ -45,12 +46,12 @@ fun AppNavigation(
         composable(
             route = NavigationItem.QUIZ.route,
             arguments = listOf(
-                navArgument("category") {
+                navArgument(Args.CATEGORY) {
                     type = NavType.StringType
                     defaultValue = null
                     nullable = true
                 },
-                navArgument("is_from_history") {
+                navArgument(Args.IS_FROM_HISTORY) {
                     type = NavType.BoolType
                     defaultValue = false
                 }

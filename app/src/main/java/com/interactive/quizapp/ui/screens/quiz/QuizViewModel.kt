@@ -1,22 +1,16 @@
 package com.interactive.quizapp.ui.screens.quiz
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.interactive.quizapp.domain.model.QuestionModel
 import com.interactive.quizapp.domain.usecase.GetQuestionsByCategoryUseCase
-import com.interactive.quizapp.domain.usecase.UpdateQuestionUseCase
 import com.interactive.quizapp.domain.usecase.UpdateQuestionsUseCase
+import com.interactive.quizapp.utils.Args
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,8 +21,8 @@ class QuizViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val categoryArg: String? = savedStateHandle["category"]
-    val isFromHistoryArg: Boolean = checkNotNull(savedStateHandle["is_from_history"])
+    private val categoryArg: String? = savedStateHandle[Args.CATEGORY]
+    val isFromHistoryArg: Boolean = checkNotNull(savedStateHandle[Args.IS_FROM_HISTORY])
 
 
     private val _questions = MutableStateFlow<List<QuestionModel>>(emptyList())
