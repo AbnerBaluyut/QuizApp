@@ -87,6 +87,7 @@ fun HistoryScreen(
                     } else {
                         0f
                     }
+                    val hasAnswers = item.value.any { it.userAnswerIndex != null }
                     ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -102,6 +103,7 @@ fun HistoryScreen(
                                 NavigationItem.QUIZ.createRoute(category = category, isFromHistory = true)
                             )
                         },
+                        enabled = hasAnswers,
                         content =  {
                             Row(
                                 modifier = Modifier
