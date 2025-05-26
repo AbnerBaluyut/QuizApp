@@ -9,7 +9,6 @@ fun QuestionEntity.toModel(): QuestionModel = QuestionModel(
     category = category,
     options = options,
     correctAnswerIndex = correctAnswerIndex,
-    isMarked = isMarked,
     userAnswerIndex = userAnswerIndex
 )
 
@@ -19,6 +18,5 @@ fun QuestionModel.toEntity(): QuestionEntity = QuestionEntity(
     category = category,
     options = options,
     correctAnswerIndex = correctAnswerIndex,
-    isMarked = isMarked,
     userAnswerIndex = userAnswerIndex
 )

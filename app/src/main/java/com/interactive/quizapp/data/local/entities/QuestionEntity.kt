@@ -10,6 +10,5 @@ data class QuestionEntity(
     val options: List<String>,
     val correctAnswerIndex: Int,
     val category: String,
-    val isMarked: Boolean = false,
     val userAnswerIndex: Int? = null,
 )
