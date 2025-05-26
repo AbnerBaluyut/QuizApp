@@ -1,6 +1,7 @@
 package com.interactive.quizapp.ui.screens.history
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,24 +19,23 @@ class HistoryViewModel @Inject constructor(
     private val getQuestionsUseCase: GetQuestionsUseCase
 ): ViewModel() {
 
-    private val _groupedQuestions = mutableMapOf<String, List<QuestionModel>>()
-    val groupedQuestions: Map<String, List<QuestionModel>> get() = _groupedQuestions
+    private val _groupedQuestions = MutableStateFlow<Map<String, List<QuestionModel>>>(mutableStateMapOf())
+    val groupedQuestions: StateFlow<Map<String, List<QuestionModel>>> get() = _groupedQuestions
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    fun getQuestions() {
+    init {
+        getQuestions()
+    }
+
+    private fun getQuestions() {
         _isLoading.value = true
         viewModelScope.launch {
             try {
                 getQuestionsUseCase.invoke().collect { questions ->
                     val groupedByCategory = questions.groupBy { it.category }
-                    _groupedQuestions.putAll(groupedByCategory)
-                    _groupedQuestions.values.forEach {
-                        it.forEach { question ->
-                            Timber.e("ID: ${question.id} === ANSWERED: ${question.userAnswerIndex}")
-                        }
-                    }
+                    _groupedQuestions.value = groupedByCategory
                     _isLoading.value = false
                 }
             } catch (e: Exception) {

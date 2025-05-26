@@ -5,6 +5,7 @@ import com.interactive.quizapp.data.local.entities.QuestionEntity
 import com.interactive.quizapp.domain.repository.QuizRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -13,7 +14,14 @@ class QuizRepositoryImpl @Inject constructor(
 ): QuizRepository {
 
     override suspend fun getQuestions(): Flow<List<QuestionEntity>> = dao.getQuestions()
-    override suspend fun saveQuestions(questions: List<QuestionEntity>) = dao.insertQuestions(questions = questions)
+    override suspend fun saveQuestions(questions: List<QuestionEntity>) {
+        val existingQuestions = getQuestions().first()
+        if (existingQuestions.isEmpty()) {
+            dao.insertQuestions(questions = questions)
+        } else {
+            return
+        }
+    }
     override suspend fun getCategories(): Flow<List<String>> = dao.getCategories()
     override suspend fun getQuestionsByCategory(category: String?): Flow<List<QuestionEntity>> = flow {
         if (category.isNullOrBlank()) {

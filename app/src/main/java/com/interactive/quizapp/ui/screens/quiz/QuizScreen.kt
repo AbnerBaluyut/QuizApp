@@ -66,21 +66,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun QuizScreen(
     navController: NavController,
-    category: String?,
     viewModel: QuizViewModel = hiltViewModel()
 ) {
 
     val currentPage by viewModel.currentPage.collectAsState()
-    val questions by viewModel.questions.collectAsStateWithLifecycle()
+    val questions by viewModel.questions.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    val pagerState: PagerState = rememberPagerState { questions.size + 1 }
+    val pagerState = rememberPagerState { questions.size + 1 }
     val scope = rememberCoroutineScope()
     val isShowDialog = remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        viewModel.getQuestionsByCategory(category = category)
-    }
 
     LaunchedEffect(pagerState.currentPage) {
         viewModel.updateCurrentPage(pagerState.currentPage)
@@ -96,7 +91,9 @@ fun QuizScreen(
                 navController.popBackStack()
             }
         } else {
-            navController.popBackStack()
+            navController.popBackStack().let {
+                viewModel.updateAnswers()
+            }
         }
     }
 
@@ -233,7 +230,9 @@ fun QuizScreen(
                                     }
                                 },
                                 onTapHome = {
-                                    navController.popBackStack()
+                                    navController.popBackStack().let {
+                                        viewModel.updateAnswers()
+                                    }
                                 },
                             )
                         }
@@ -267,7 +266,6 @@ fun QuizScreen(
                                 isShowDialog.value = true
                             }
                         } else {
-                            viewModel.updateAnswers()
                             scope.launch {
                                 pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
                             }

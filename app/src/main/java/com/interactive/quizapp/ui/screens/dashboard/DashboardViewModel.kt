@@ -22,9 +22,12 @@ class DashboardViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _state = MutableStateFlow<DashboardState>(DashboardState.LoadingState)
-//    val state: StateFlow<DashboardState> = _state
 
-    fun startUp() {
+    init {
+        startUp()
+    }
+
+    private fun startUp() {
         _state.value = DashboardState.LoadingState
         viewModelScope.launch {
             try {

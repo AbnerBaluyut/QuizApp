@@ -1,6 +1,7 @@
 package com.interactive.quizapp.ui.screens.quiz
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.interactive.quizapp.domain.model.QuestionModel
@@ -22,8 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val getQuestionsByCategoryUseCase: GetQuestionsByCategoryUseCase,
-    private val updateQuestionsUseCase: UpdateQuestionsUseCase
+    private val updateQuestionsUseCase: UpdateQuestionsUseCase,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
+
+    private val categoryArg: String? = savedStateHandle["category"]
 
     private val _questions = MutableStateFlow<List<QuestionModel>>(emptyList())
     val questions: StateFlow<List<QuestionModel>> get() = _questions
@@ -34,11 +38,18 @@ class QuizViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    fun getQuestionsByCategory(category: String?, isClear: Boolean = false) {
+    init {
+        getQuestionsByCategory(category = categoryArg)
+    }
+
+    private fun getQuestionsByCategory(category: String?) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
                 getQuestionsByCategoryUseCase.invoke(category = category).collect { items ->
+                    items.map {
+                        it.userAnswerIndex = null
+                    }
                     _questions.value = items
                     _isLoading.value = false
                 }

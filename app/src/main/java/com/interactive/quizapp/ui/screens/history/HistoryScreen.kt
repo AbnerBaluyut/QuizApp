@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,16 +44,12 @@ import com.interactive.quizapp.utils.extensions.paddingVerticalSmall
 
 @Composable
 fun HistoryScreen(
-    navController: NavController? = null
+    navController: NavController? = null,
+    viewModel: HistoryViewModel = hiltViewModel()
 ) {
 
-    val viewModel: HistoryViewModel = hiltViewModel()
     val isLoading by viewModel.isLoading.collectAsState()
-    val groupedQuestions = viewModel.groupedQuestions
-
-    LaunchedEffect(Unit) {
-        viewModel.getQuestions()
-    }
+    val groupedQuestions by viewModel.groupedQuestions.collectAsState()
 
     Scaffold(
         topBar = {
@@ -90,18 +87,24 @@ fun HistoryScreen(
                     } else {
                         0f
                     }
-                    ElevatedButton(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
                                 horizontal = Spacing.large
+                            )
+                            .shadow(
+                                shape = RoundedCornerShape(50),
+                                clip = true,
+                                elevation = 5.dp
+                            ).background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(50),
+                            )
+                            .padding(
+                                horizontal = Spacing.small
                             ),
-                        shape = RoundedCornerShape(80),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 5.dp
-                        ),
-                        onClick = { },
-                        content =  {
+                        content = {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -109,7 +112,11 @@ fun HistoryScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Column {
+                                Column(
+                                    modifier = Modifier.padding(
+                                        start = Spacing.small
+                                    )
+                                ) {
                                     Text(
                                         text = category,
                                         style = TextStyle(
@@ -118,7 +125,6 @@ fun HistoryScreen(
                                             color = Purple
                                         )
                                     )
-                                    Spacer(modifier = Modifier.paddingVerticalSmall())
                                     Text(
                                         text = "Score: $correctAnswers/$totalQuestions",
                                         style = TextStyle(

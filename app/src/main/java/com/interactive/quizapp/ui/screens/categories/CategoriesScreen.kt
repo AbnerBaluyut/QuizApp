@@ -53,15 +53,11 @@ import com.interactive.quizapp.utils.routes.NavigationItem
 
 @Composable
 fun CategoriesScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: CategoriesViewModel = hiltViewModel()
 ) {
 
-    val viewModel: CategoriesViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.getCategories()
-    }
 
     Scaffold(
         topBar = {

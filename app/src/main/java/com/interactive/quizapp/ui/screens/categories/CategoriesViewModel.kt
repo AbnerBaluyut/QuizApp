@@ -29,6 +29,10 @@ class CategoriesViewModel @Inject constructor(
     private val _state = MutableStateFlow<CategoriesState>(CategoriesState.LoadingState)
     val state: StateFlow<CategoriesState> = _state
 
+    init {
+        getCategories()
+    }
+
     fun getCategories() {
         _state.value = CategoriesState.LoadingState
         viewModelScope.launch {
