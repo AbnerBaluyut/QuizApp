@@ -19,3 +19,6 @@ val Pink = Color(0xFFBF1E99)
 val PurpleGradient = Brush.verticalGradient(
     colors = listOf(Purple, DarkPurple)
 )
+
+val DarkGreen = Color(0xFF006400)
+val DarkRed = Color(0xFF8B0000)

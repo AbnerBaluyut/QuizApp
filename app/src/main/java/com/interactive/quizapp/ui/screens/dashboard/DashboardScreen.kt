@@ -67,7 +67,7 @@ fun DashboardScreen(
                                     containerColor = Color.Transparent
                                 ),
                                 onClick = {
-                                    navController.navigate(NavigationItem.QUIZ.route)
+                                    navController.navigate(NavigationItem.QUIZ.createRoute())
                                 },
                                 content = {
                                     Text(

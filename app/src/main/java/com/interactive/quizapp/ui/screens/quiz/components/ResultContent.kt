@@ -104,7 +104,7 @@ fun ResultContent(
                 Column(
                     modifier = Modifier.wrapContentHeight(),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.Start,
                     content = {
                         Text(
                             "Correct: $correctAnswers",

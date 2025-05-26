@@ -51,9 +51,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.interactive.quizapp.ui.screens.quiz.components.FeedbackContent
 import com.interactive.quizapp.ui.screens.quiz.components.QuizAppBar
 import com.interactive.quizapp.ui.screens.quiz.components.ResultContent
 import com.interactive.quizapp.ui.screens.quiz.components.ShowWarningAlertDialog
+import com.interactive.quizapp.ui.theme.DarkGreen
+import com.interactive.quizapp.ui.theme.DarkRed
 import com.interactive.quizapp.ui.theme.Purple
 import com.interactive.quizapp.ui.theme.PurpleGradient
 import com.interactive.quizapp.utils.extensions.Spacing
@@ -179,6 +182,18 @@ fun QuizScreen(
                                                     .padding(Spacing.medium),
                                             )
                                             Spacer(modifier = Modifier.paddingVerticalMedium())
+                                            if (viewModel.isFromHistoryArg) {
+                                                val isMatch = question.correctAnswerIndex == question.userAnswerIndex
+                                                val userAnswer = question.options[question.userAnswerIndex ?: 0]
+                                                val correctAnswer = question.options[question.correctAnswerIndex]
+                                                FeedbackContent(
+                                                    isMatch = isMatch,
+                                                    userAnswer = userAnswer,
+                                                    correctAnswer = correctAnswer
+                                                )
+                                                return@HorizontalPager
+                                            }
+
                                             LazyColumn(
                                                 verticalArrangement = Arrangement.Center,
                                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -255,7 +270,7 @@ fun QuizScreen(
                         )
                     ),
                     onClick = {
-                        if (pagerState.currentPage < questions.size - 1) {
+                        if (pagerState.currentPage < (questions.size - 1)) {
                             var hasAnswer = questions[pagerState.currentPage].userAnswerIndex != null
                             if (hasAnswer) {
                                 scope.launch {
@@ -266,14 +281,26 @@ fun QuizScreen(
                                 isShowDialog.value = true
                             }
                         } else {
-                            scope.launch {
-                                pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
+                            if (viewModel.isFromHistoryArg) {
+                                navController.popBackStack()
+                            } else {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
+                                }
                             }
                         }
                     },
                     content = {
                         Text(
-                            text = if (currentPage >= (questions.size - 1)) "Finish Quiz" else "Next",
+                            text = if (currentPage >= (questions.size - 1)) {
+                                if (viewModel.isFromHistoryArg) {
+                                    "Exit"
+                                } else {
+                                    "Finish Quiz"
+                                }
+                            } else {
+                                "Next"
+                            },
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 color = Color.White

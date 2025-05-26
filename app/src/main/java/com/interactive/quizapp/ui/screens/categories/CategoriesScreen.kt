@@ -106,7 +106,7 @@ fun CategoriesScreen(
                                         defaultElevation = 5.dp
                                     ),
                                     onClick = {
-                                        navController.navigate("${NavigationItem.QUIZ.route}?category=${category}")
+                                        navController.navigate(NavigationItem.QUIZ.createRoute(category = category))
                                     },
                                     content =  {
                                         Text(

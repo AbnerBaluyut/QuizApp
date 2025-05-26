@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +40,7 @@ import com.interactive.quizapp.ui.screens.history.components.HistoryAppBar
 import com.interactive.quizapp.ui.theme.Purple
 import com.interactive.quizapp.utils.extensions.Spacing
 import com.interactive.quizapp.utils.extensions.paddingVerticalSmall
+import com.interactive.quizapp.utils.routes.NavigationItem
 
 @Composable
 fun HistoryScreen(
@@ -87,24 +87,22 @@ fun HistoryScreen(
                     } else {
                         0f
                     }
-                    Box(
+                    ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
                                 horizontal = Spacing.large
-                            )
-                            .shadow(
-                                shape = RoundedCornerShape(50),
-                                clip = true,
-                                elevation = 5.dp
-                            ).background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(50),
-                            )
-                            .padding(
-                                horizontal = Spacing.small
                             ),
-                        content = {
+                        shape = RoundedCornerShape(80),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 5.dp
+                        ),
+                        onClick = {
+                            navController?.navigate(
+                                NavigationItem.QUIZ.createRoute(category = category, isFromHistory = true)
+                            )
+                        },
+                        content =  {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -112,11 +110,7 @@ fun HistoryScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Column(
-                                    modifier = Modifier.padding(
-                                        start = Spacing.small
-                                    )
-                                ) {
+                                Column {
                                     Text(
                                         text = category,
                                         style = TextStyle(

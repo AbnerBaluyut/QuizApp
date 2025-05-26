@@ -43,12 +43,16 @@ fun AppNavigation(
             content = { CategoriesScreen(navController) }
         )
         composable(
-            route = "${NavigationItem.QUIZ.route}?category={category}",
+            route = NavigationItem.QUIZ.route,
             arguments = listOf(
                 navArgument("category") {
                     type = NavType.StringType
                     defaultValue = null
                     nullable = true
+                },
+                navArgument("is_from_history") {
+                    type = NavType.BoolType
+                    defaultValue = false
                 }
             ),
             enterTransition = {

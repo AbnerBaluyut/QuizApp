@@ -28,6 +28,8 @@ class QuizViewModel @Inject constructor(
 ): ViewModel() {
 
     private val categoryArg: String? = savedStateHandle["category"]
+    val isFromHistoryArg: Boolean = checkNotNull(savedStateHandle["is_from_history"])
+
 
     private val _questions = MutableStateFlow<List<QuestionModel>>(emptyList())
     val questions: StateFlow<List<QuestionModel>> get() = _questions
@@ -47,8 +49,10 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 getQuestionsByCategoryUseCase.invoke(category = category).collect { items ->
-                    items.map {
-                        it.userAnswerIndex = null
+                    if (!isFromHistoryArg) {
+                        items.map {
+                            it.userAnswerIndex = null
+                        }
                     }
                     _questions.value = items
                     _isLoading.value = false
