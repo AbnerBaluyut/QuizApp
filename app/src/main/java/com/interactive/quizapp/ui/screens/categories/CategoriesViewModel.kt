@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -36,14 +37,14 @@ class CategoriesViewModel @Inject constructor(
     fun getCategories() {
         _state.value = CategoriesState.LoadingState
         viewModelScope.launch {
-            try {
-                getCategoriesUseCase.invoke().collect { categories ->
+            getCategoriesUseCase.invoke()
+                .catch { e ->
+                    _state.value = CategoriesState.ErrorState(errorMessage = "Something went wrong")
+                    Timber.e(e.message, "Failed to get categories")
+                }
+                .collect { categories ->
                     _state.value = CategoriesState.SuccessState(categories = categories)
                 }
-            } catch (e: Exception) {
-                _state.value = CategoriesState.ErrorState(errorMessage = "Something went wrong")
-                Timber.e(e.message, "Failed to get categories")
-            }
         }
     }
 }

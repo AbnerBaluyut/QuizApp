@@ -10,6 +10,7 @@ import com.interactive.quizapp.domain.usecase.GetQuestionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,15 +33,13 @@ class HistoryViewModel @Inject constructor(
     private fun getQuestions() {
         _isLoading.value = true
         viewModelScope.launch {
-            try {
-                getQuestionsUseCase.invoke().collect { questions ->
+            getQuestionsUseCase.invoke()
+                .catch { _isLoading.value = false }
+                .collect { questions ->
                     val groupedByCategory = questions.groupBy { it.category }
                     _groupedQuestions.value = groupedByCategory
                     _isLoading.value = false
                 }
-            } catch (e: Exception) {
-                _isLoading.value = false
-            }
         }
     }
 }

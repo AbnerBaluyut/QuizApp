@@ -10,6 +10,7 @@ import com.interactive.quizapp.utils.Args
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,8 +42,12 @@ class QuizViewModel @Inject constructor(
     private fun getQuestionsByCategory(category: String?) {
         _isLoading.value = true
         viewModelScope.launch {
-            try {
-                getQuestionsByCategoryUseCase.invoke(category = category).collect { items ->
+            getQuestionsByCategoryUseCase.invoke(category = category)
+                .catch { e ->
+                    _isLoading.value = false
+                    Timber.e(e.message, "Failed to get questions by category")
+                }
+                .collect { items ->
                     if (!isFromHistoryArg) {
                         items.map {
                             it.userAnswerIndex = null
@@ -51,10 +56,6 @@ class QuizViewModel @Inject constructor(
                     _questions.value = items
                     _isLoading.value = false
                 }
-            } catch (e: Exception) {
-                _isLoading.value = false
-                Timber.e(e.message, "Failed to get questions by category")
-            }
         }
 
     }
